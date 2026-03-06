@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Money's City ✅</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src='https://5gvci.com/sdk.js' data-zone='10690289'></script>
+
+    <style>
+        :root { --primary: #2979ff; --bg: #f5f7fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; user-select: none; }
+        
+        /* ডিজাইন এলিমেন্ট (স্ক্রিনশট অনুযায়ী) */
+        .header { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #eee; }
+        .app-title { font-size: 24px; font-weight: bold; color: #1a237e; }
+
+        .wallet-card { 
+            background: linear-gradient(135deg, #2979ff, #1565c0); 
+            margin: 15px; padding: 30px 20px; border-radius: 25px; 
+            color: white; box-shadow: 0 10px 20px rgba(41, 121, 255, 0.3);
+        }
+        .balance-amount { font-size: 48px; font-weight: bold; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+        .menu-item { background: white; padding: 20px; border-radius: 20px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .btn-main { background: #ff5252; color: white; border: none; padding: 18px; border-radius: 15px; width: calc(100% - 30px); margin: 10px 15px; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+        /* পপআপ */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 80%; text-align: center; }
+        
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; }
+        .nav-item { text-decoration: none; color: #999; font-size: 11px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="header"><div class="app-title">Money's City ✓</div></div>
+
+    <div class="wallet-card">
+        <span style="font-size: 14px; opacity: 0.9;">মোট ব্যালেন্স</span>
+        <div class="balance-amount" id="balance">৳০.০০</div>
+    </div>
+
+    <div class="menu-grid">
+        <div class="menu-item">⚡<br><small>মোট টাস্ক</small><br><b id="tasks">০</b></div>
+        <div class="menu-item">👥<br><small>মোট রেফার</small><br><b id="refs">০</b></div>
+        <div class="menu-item">🎥<br><small>বিজ্ঞাপন দেখা</small><br><b>০</b></div>
+        <div class="menu-item">💰<br><small>বোনাস ব্যালেন্স</small><br><b>৳০.০০</b></div>
+    </div>
+
+    <button class="btn-main" onclick="showAd()">🎥 বিজ্ঞাপন দেখুন (২০৳)</button>
+    <button class="btn-main" style="background:#4caf50;" onclick="openWithdraw()">📤 টাকা উত্তোলন করুন</button>
+
+    <div id="depModal" class="modal">
+        <div class="modal-content">
+            <h3>উত্তোলনের জন্য ৫০৳ ডিপোজিট করুন</h3>
+            <p style="text-align: left; font-size: 14px;">বিকাশ/নগদ: 01873046713 / 01863796311</p>
+            <input type="text" id="trx" placeholder="TrxID লিখুন" style="width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px;">
+            <button class="btn-main" style="width:100%; margin:0;" onclick="submitTrx()">সাবমিট</button>
+            <button onclick="closeModal()" style="margin-top:10px; border:none; background:none; color:red;">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <a class="nav-item">🏠<br>হোম</a>
+        <a class="nav-item" onclick="tg.showAlert('টাস্ক শীঘ্রই আসছে')">📋<br>কাজ</a>
+        <a href="https://t.me/Mubarak_784" class="nav-item">🎧<br>সাপোর্ট</a>
+        <a class="nav-item" onclick="copyRef()">👥<br>রেফার</a>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        let balance = 0;
+        let taskCount = 0;
+
+        // আপনার বটের ইউজারনেম এখানে দিন
+        const botUser = "Takar_gas_90_bot"; 
+        const userId = tg.initDataUnsafe?.user?.id || "12345";
+        const refLink = `https://t.me/${botUser}?start=${userId}`;
+
+        function showAd() {
+            // Monetag জোন আইডি ১০৬৯০২৮৯ অ্যাক্টিভ করা হলো
+            if (typeof show_10690289 === 'function') {
+                show_10690289().then(() => { 
+                    balance += 20;
+                    taskCount++;
+                    updateUI();
+                });
+            } else {
+                tg.showConfirm("বিজ্ঞাপন লোড হয়নি। ডেমো ২০৳ যোগ করবেন?", (ok) => {
+                    if(ok) { balance += 20; taskCount++; updateUI(); }
+                });
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('balance').innerText = "৳" + balance.toFixed(2);
+            document.getElementById('tasks').innerText = taskCount;
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        function openWithdraw() { document.getElementById('depModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('depModal').style.display = 'none'; }
+        function submitTrx() { tg.showAlert("যাচাই করা হচ্ছে..."); closeModal(); }
+        function copyRef() { navigator.clipboard.writeText(refLink); tg.showAlert("লিংক কপি হয়েছে!"); }
+    </script>
+</body>
+  </html>
+  
